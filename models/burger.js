@@ -1,24 +1,31 @@
-// Import the ORM to create functions that will interact with the database.
-var orm = require("../config/orm.js");
+// # STEPS TO SEQUELIZE THE STAR WARS APP
 
-var burger = {
-  all: function(cb) {
-    orm.all("burgers", function(res) {
-      cb(res);
-    });
-  },
-  // The variables cols and vals are arrays.
-  create: function(cols, vals, cb) {
-    orm.create("burgers", cols, vals, function(res) {
-      cb(res);
-    });
-  },
-  update: function(objColVals, condition, cb) {
-    orm.update("burgers", objColVals, condition, function(res) {
-      cb(res);
-    });
-  }
+// * Install the sequelize and mysql2 npm packages.
+// * Delete the orm from config. In your app folder, create a model folder with a character.js file in the model
+// * In character.js, model out the character table, as detailed in the schema.sql file located in the root of this project directory.
+// * Remove all references to the old orm file and replace it with character.js
+// * Use Sequelize methods in place of the orm calls to retrieve and insert data.
+// * Update connection.js to use sequelize instead of the mysql package.
+// CREATE TABLE burgers
+// (
+// 	id int NOT NULL AUTO_INCREMENT,
+// 	name varchar(255) NOT NULL,
+// 	devoured BOOLEAN DEFAULT false,
+// 	PRIMARY KEY (id)
+// );
+module.exports = function (sequelize, DataTypes) {
+  const burgers = sequelize.define("burgers", {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [1, 255]
+      }
+    },
+    devoured: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
+  });
+  return burgers;
 };
-
-// Export the database functions for the controller (catsController.js).
-module.exports = burger;

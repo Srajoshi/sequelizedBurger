@@ -1,48 +1,66 @@
-var express = require("express");
-
-var router = express.Router();
-
 // Import the model (burger.js) to use its database functions.
-var burger = require("../models/burger.js");
+var express = require("express");
+var router = express.Router();
+var db = require("../models/");
 
 // Create all our routes and set up logic within those routes where required.
-router.get("/", function(req, res) {
-  burger.all(function(data) {
-    var hbsObject = {
-      burgers: data
-    };
-    console.log(hbsObject);
-    res.render("index", hbsObject);
+
+
+module.exports = function (app) {
+
+  router.get("/", function (req, res) {
+    // Add sequelize code to find all posts, and return them to the user with res.json
+    db.burger.findAll()
+      .then(function (burgerData) {
+        console.log(burgerData);
+        res.json(burgerData)
+      })
+      .catch(function (err) {
+        console.log(err)
+        res.json(err)
+      })
   });
-});
 
-router.post("/api/burgers", function(req, res) {
-  burger.create(["name", "devoured"], [req.body.name, req.body.devoured], function(result) {
-    // Send back the ID of the new quote
-    res.json({ id: result.insertId });
+  router.post("/api/burger", function (req, res) {
+    // Add sequelize code for creating a post using req.body,
+
+    db.burger.create({
+        name: req.body.name,
+        devoured: req.body.devoured
+
+      }).then(function (Data) {
+        console.log(Data);
+        res.json(Data)
+      })
+      .catch(function (err) {
+
+        console.log(err);
+        res.json(err);
+
+      })
+    // then return the result using res.json
   });
-});
 
-router.put("/api/burgers/:id", function(req, res) {
-  var condition = "id = " + req.params.id;
 
-  console.log("condition", condition);
-
-  burger.update(
-    {
+  router.put("/api/burgers/:id", function (req, res) {
+    const updateBurger = {
+      name: req.body.name,
       devoured: req.body.devoured
-    },
-    condition,
-    function(result) {
-      if (result.changedRows === 0) {
-        // If no rows were changed, then the ID must not exist, so 404
-        return res.status(404).end();
-      }
-      res.status(200).end();
-
     }
-  );
-});
+    db.burger.update(updateBurger, {
+        where: {
+          id: req.body.id
+        }
+      })
+      .then(function (data) {
+        console.log(data);
+        res.json(data);
+      })
+      .catch(function (err) {
+        console.log(err);
+        res.json(err)
+      });
 
-// Export routes for server.js to use.
-module.exports = router;
+
+  });
+};

@@ -4,8 +4,9 @@
   "description": "# Node Express Handlebars",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "npm run lint",
+    "start": "node server.js",
+    "lint": "./node_modules/.bin/eslint **/*.js --quiet; exit 0"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,11 @@
   "dependencies": {
     "express": "^4.16.4",
     "express-handlebars": "^3.0.0",
-    "mysql": "^2.16.0"
+    "mysql": "^2.16.0",
+    "mysql2": "^1.6.1",
+    "sequelize": "^4.41.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.7.0"
   }
 }
